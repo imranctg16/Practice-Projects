@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3003:3000'
+    environment:
+      - NODE_ENV=development
+      - JWT_SECRET=your-super-secret-jwt-key
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start:dev
