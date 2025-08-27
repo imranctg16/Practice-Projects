@@ -2,7 +2,7 @@
 
 A comprehensive NestJS boilerplate with User authentication and Post management APIs. Perfect for understanding NestJS architecture and exploring TypeScript-based backend development.
 
-## 🚀 Features
+##  Features
 
 - **JWT Authentication** - Secure login/logout system
 - **User Management** - Complete CRUD operations for users
@@ -13,7 +13,7 @@ A comprehensive NestJS boilerplate with User authentication and Post management 
 - **Validation** - Request/response validation with class-validator
 - **Error Handling** - Comprehensive error responses
 
-## 📋 API Endpoints
+##  API Endpoints
 
 ### Authentication
 - `POST /auth/login` - Login user
@@ -36,7 +36,7 @@ A comprehensive NestJS boilerplate with User authentication and Post management 
 - `PATCH /posts/:id/publish` - Publish post (protected, owner only)
 - `PATCH /posts/:id/unpublish` - Unpublish post (protected, owner only)
 
-## 🛠️ Installation & Setup
+##  Installation & Setup
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -63,7 +63,7 @@ A comprehensive NestJS boilerplate with User authentication and Post management 
    - API: http://localhost:3000
    - Swagger Documentation: http://localhost:3000/api
 
-## 🧪 Testing the APIs
+##  Testing the APIs
 
 ### 1. Create a User
 ```bash
@@ -105,7 +105,7 @@ curl -X POST http://localhost:3000/posts \\
 curl http://localhost:3000/posts
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -132,7 +132,7 @@ src/
 └── main.ts               # Application entry point
 ```
 
-## 🔧 Key NestJS Concepts Demonstrated
+##  Key NestJS Concepts Demonstrated
 
 ### 1. **Modules**
 Each feature (Users, Posts, Auth) is organized in its own module with clear boundaries.
@@ -156,7 +156,7 @@ Validation pipes automatically validate request bodies using class-validator.
 ### 6. **Relationships**
 User-Post relationship demonstrates TypeORM associations.
 
-## 🎯 Learning Path
+##  Learning Path
 
 1. **Start with the basics**: Explore the User module to understand entities, DTOs, services, and controllers
 2. **Authentication**: Study the auth module to see JWT implementation
@@ -164,7 +164,7 @@ User-Post relationship demonstrates TypeORM associations.
 4. **Advanced features**: Look at post publishing, filtering, and ownership checks
 5. **API Testing**: Use Swagger UI to test all endpoints interactively
 
-## 🚦 Example Data Flow
+##  Example Data Flow
 
 ```
 1. User Registration (POST /users)
@@ -178,14 +178,14 @@ User-Post relationship demonstrates TypeORM associations.
 5. Update Own Post (PATCH /posts/:id) → Ownership validation
 ```
 
-## 📚 Learning Resources
+##  Learning Resources
 
 - **Swagger UI**: Visit `/api` to see interactive documentation
 - **Database**: SQLite file `database.sqlite` created automatically
 - **Logs**: Check console output for database queries and errors
 - **TypeScript**: Hover over variables in your IDE to see inferred types
 
-## 🛡️ Security Features
+##  Security Features
 
 - Password hashing with bcrypt
 - JWT token authentication  
@@ -193,7 +193,7 @@ User-Post relationship demonstrates TypeORM associations.
 - Authorization checks (users can only modify their own posts)
 - CORS enabled for frontend integration
 
-## 💡 Next Steps
+## Next Steps
 
 Once you're comfortable with this boilerplate, try:
 
@@ -204,4 +204,4 @@ Once you're comfortable with this boilerplate, try:
 5. Integrating with a PostgreSQL database
 6. Adding pagination and search features
 
-Happy coding with NestJS! 🎉
+Happy coding with NestJS! 
