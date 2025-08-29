@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useForm } from "../hooks/useForm";
 
 type User = {
   id: string | number;
@@ -9,59 +9,35 @@ type User = {
   greeting: string;
   description: string;
 }
+
 interface props {
   addUser: (user: User) => void,
   user: User,
   setUser: React.Dispatch<React.SetStateAction<User>>,
-  isEdit: boolean,
-  errors: { name?: string; email?: string; age?: string; greeting?: string; description?: string }
-  setErrors: React.Dispatch<React.SetStateAction<{ name?: string; email?: string; age?: string; greeting?: string; description?: string }>>
+  isEdit: boolean
 }
 
-function CreateUserForm({ addUser, user, setUser, isEdit, errors, setErrors }: props) {
-  const [submitFlag, setSubmitFlag] = useState(true);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    validateFields(e.target.name, e.target.value);
-    setUser((prev) => {
-      const { name, value } = e.target;
-      return { ...prev, [name]: value }
-    })
-  }
+const validationRules = {
+  name: (value) => !value ? "Name is required" : "",
+  email: (value) => !value ? "Email is required" : "",
+  age: (value) => !value ? "Age is required" : value < 18 ? "Must be at least 18" : "",
+  greeting: (value) => !value ? "Greeting is required" : "",
+  description: (value) => !value ? "Description is required" : ""
+};
+
+function CreateUserForm({ addUser, user, setUser, isEdit }: props) {
+  const { values, errors, handleChange, hasErrors } = useForm(user, validationRules);
 
   const handleSubmit = () => {
-    if (Object.values(errors).some((error) => error != "")) {
+    if (hasErrors()) {
       alert("Please fix the errors before submitting.");
       return;
     }
     if (isEdit) {
-      addUser({ ...user, id: user.id });
+      addUser({ ...values, id: user.id });
     } else {
-      addUser({ ...user, id: Date.now() });
+      addUser({ ...values, id: Date.now() });
     }
-  }
-  const validateFields = (name: string, value: string | number) => {
-    let error = "";
-    switch (name) {
-      case "name":
-        if (!value) error = "Name is required";
-        break;
-      case "email":
-        if (!value) error = "Email is required";
-        break;
-      case "age":
-        if (!value) error = "Age is required";
-        else if (typeof value === "number" && value < 18) error = "Must be at least 18";
-        break;
-      case "greeting":
-        if (!value) error = "Greeting is required";
-        break;
-      case "description":
-        if (!value) error = "Description is required";
-        break;
-      default:
-        break;
-    }
-    setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
   return (
@@ -79,7 +55,7 @@ function CreateUserForm({ addUser, user, setUser, isEdit, errors, setErrors }: p
             id="name"
             name="name"
             type="text"
-            value={user.name}
+            value={values.name}
             onChange={handleChange}
 
             className="px-3 py-2 w-full bg-gray-50 border rounded-lg border-gray"
@@ -94,7 +70,7 @@ function CreateUserForm({ addUser, user, setUser, isEdit, errors, setErrors }: p
             id="age"
             name="age"
             type="number"
-            value={user.age}
+            value={values.age}
             onChange={handleChange}
             className="px-3 py-2 w-full bg-gray-50 border rounded-lg border-gray"
             required
@@ -108,7 +84,7 @@ function CreateUserForm({ addUser, user, setUser, isEdit, errors, setErrors }: p
             id="email"
             name="email"
             type="email"
-            value={user.email}
+            value={values.email}
             onChange={handleChange}
             className="px-3 py-2 w-full bg-gray-50 border rounded-lg border-gray"
             required
@@ -122,7 +98,7 @@ function CreateUserForm({ addUser, user, setUser, isEdit, errors, setErrors }: p
             id="greeting"
             name="greeting"
             type="text"
-            value={user.greeting}
+            value={values.greeting}
             onChange={handleChange}
             className="border rounded-lg p-2 w-full bg-gray-50"
           />
@@ -134,7 +110,7 @@ function CreateUserForm({ addUser, user, setUser, isEdit, errors, setErrors }: p
           <textarea
             id="description"
             name="description"
-            value={user.description}
+            value={values.description}
             onChange={handleChange}
             className="border rounded-lg p-2 w-full bg-gray-50"
           />
