@@ -18,11 +18,11 @@ interface props {
 }
 
 const validationRules = {
-  name: (value) => !value ? "Name is required" : "",
-  email: (value) => !value ? "Email is required" : "",
-  age: (value) => !value ? "Age is required" : value < 18 ? "Must be at least 18" : "",
-  greeting: (value) => !value ? "Greeting is required" : "",
-  description: (value) => !value ? "Description is required" : ""
+  name: (value: string) => !value ? "Name is required" : "",
+  email: (value: string) => !value ? "Email is required" : "",
+  age: (value: number) => !value ? "Age is required" : value < 18 ? "Must be at least 18" : "",
+  greeting: (value: string) => !value ? "Greeting is required" : "",
+  description: (value: string) => !value ? "Description is required" : ""
 };
 
 function CreateUserForm({ addUser, user, setUser, isEdit }: props) {

@@ -7,12 +7,14 @@ type User = {
   description: string;
 };
 
+
 type Props = {
   setShow: (show: boolean) => void;
   users: User[];
   editUser: (user: User) => void;
   deleteUser: (user: User) => void;
 };
+
 function UserList({ setShow, users, editUser, deleteUser }: Props) {
   return (
     <div className="space-y-6">

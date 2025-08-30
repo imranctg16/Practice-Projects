@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 function useUsers() {
   type User = {
     id: string | number;
@@ -9,6 +10,24 @@ function useUsers() {
     description: string;
   };
 
+  const mockUsers = [
+    {
+      id: 1,
+      name: "John Doe",
+      age: 30,
+      email: "john@example.com",
+      greeting: "Hello!",
+      description: "A software engineer from NY."
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      age: 25,
+      email: "jane@example.com",
+      greeting: "Hi there!",
+      description: "A graphic designer from CA."
+    }
+  ];
   const [isShow, setShow] = useState(false);
 
   const toggleShow = (value: boolean) => {
@@ -46,6 +65,10 @@ function useUsers() {
     let filtered = users.filter(u => u.id !== user.id)
     setUsers(filtered);
   }
+
+  useEffect(() => {
+    setUsers(mockUsers);
+  }, []);
 
   return {
     isShow,
