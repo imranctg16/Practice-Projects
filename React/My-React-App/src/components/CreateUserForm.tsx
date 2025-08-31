@@ -1,5 +1,6 @@
 import type React from "react";
 import { useForm } from "../hooks/useForm";
+import { useUserContext } from "../providers/UserProvider";
 
 type User = {
   id: string | number;
@@ -10,12 +11,6 @@ type User = {
   description: string;
 }
 
-interface props {
-  addUser: (user: User) => void,
-  user: User,
-  setUser: React.Dispatch<React.SetStateAction<User>>,
-  isEdit: boolean
-}
 
 const validationRules = {
   name: (value: string) => !value ? "Name is required" : "",
@@ -25,7 +20,8 @@ const validationRules = {
   description: (value: string) => !value ? "Description is required" : ""
 };
 
-function CreateUserForm({ addUser, user, setUser, isEdit }: props) {
+function CreateUserForm() {
+  const { addUser, user, setUser, isEdit } = useUserContext();
   const { values, errors, handleChange, hasErrors } = useForm(user, validationRules);
 
   const handleSubmit = () => {

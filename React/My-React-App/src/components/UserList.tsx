@@ -1,3 +1,5 @@
+import { useUserContext } from '../providers/UserProvider';
+
 type User = {
   id: string | number;
   name: string;
@@ -7,20 +9,14 @@ type User = {
   description: string;
 };
 
-
-type Props = {
-  setShow: (show: boolean) => void;
-  users: User[];
-  editUser: (user: User) => void;
-  deleteUser: (user: User) => void;
-};
-
-function UserList({ setShow, users, editUser, deleteUser }: Props) {
+function UserList() {
+  const { setShow, users, editUser, deleteUser } = useUserContext();
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-800">Users</h2>
-        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors" onClick={() => { setShow(true) }}>
+        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
+          onClick={() => { setShow(true); }}>
           Create User
         </button>
       </div>
