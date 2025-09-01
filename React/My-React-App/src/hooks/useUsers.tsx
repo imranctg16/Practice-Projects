@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { User } from "../types/User";
 import { userApi } from "../services/userApi";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function useUsers() {
   const [isShow, setShow] = useState(false);
@@ -23,6 +24,7 @@ function useUsers() {
   const [isLoading, setIsLoading] = useState(false); // For fetching users
   const [isSubmitting, setIsSubmitting] = useState(false); // For create/update
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const addUser = async (user: User) => {
     setIsSubmitting(true);
@@ -31,9 +33,11 @@ function useUsers() {
       if (isEdit) {
         const updatedUser = await userApi.updateUser(user);
         setUsers(users.map(u => (u.id === updatedUser.id ? updatedUser : u)));
+        navigate(`/users/${updatedUser.id}`); // Navigate to user detail
       } else {
         const newUser = await userApi.createUser(user);
         setUsers([...users, newUser]);
+        navigate(`/users/${newUser.id}`); // Navigate to user detail
       }
       setShow(false);
       setIsEdit(false);

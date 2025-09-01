@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useUserContext } from '../providers/UserProvider';
 
 function UserList() {
@@ -6,7 +7,7 @@ function UserList() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-800">Users</h2>
-        <button 
+        <button
           className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-colors"
           onClick={() => { setShow(true); }}
           disabled={isSubmitting}
@@ -28,7 +29,7 @@ function UserList() {
               <p className="text-red-600 text-sm">{error}</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={refetch}
             className="bg-red-100 hover:bg-red-200 text-red-800 px-3 py-1 rounded text-sm font-medium transition-colors"
           >
@@ -48,41 +49,45 @@ function UserList() {
             <div className="py-8 text-gray-500">No Users Found</div>
           ) :
 
-              <table className="min-w-full bg-white border-gray-200 border">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="py-2">Name</th>
-                    <th className="py-2">Email</th>
-                    <th className="py-2">Age</th>
-                    <th className="py-2">Actions</th>
+            <table className="min-w-full bg-white border-gray-200 border">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="py-2">Name</th>
+                  <th className="py-2">Email</th>
+                  <th className="py-2">Age</th>
+                  <th className="py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map(user => (
+                  <tr key={user.id}>
+                    <td className="border-b py-2">
+                      <Link to={`/users/${user.id}`} className="text-blue-500 hover:underline">
+                        {user.name}
+                      </Link>
+                    </td>
+                    <td className="border-b py-2">{user.email}</td>
+                    <td className="border-b py-2">{user.age}</td>
+                    <td className="border-b py-2 space-x-4">
+                      <button
+                        className="text-blue-500 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed"
+                        onClick={() => editUser(user)}
+                        disabled={isSubmitting}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="text-red-500 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed"
+                        onClick={() => deleteUser(user)}
+                        disabled={isSubmitting}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {users.map(user => (
-                    <tr key={user.id}>
-                      <td className="border-b py-2">{user.name}</td>
-                      <td className="border-b py-2">{user.email}</td>
-                      <td className="border-b py-2">{user.age}</td>
-                      <td className="border-b py-2 space-x-4">
-                        <button 
-                          className="text-blue-500 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed" 
-                          onClick={() => editUser(user)}
-                          disabled={isSubmitting}
-                        >
-                          Edit
-                        </button>
-                        <button 
-                          className="text-red-500 hover:underline disabled:text-gray-400 disabled:cursor-not-allowed" 
-                          onClick={() => deleteUser(user)}
-                          disabled={isSubmitting}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                ))}
+              </tbody>
+            </table>
           }
         </div>
       </div>

@@ -1,22 +1,44 @@
+import { Link, useLocation } from 'react-router-dom';
+
 function Sidebar() {
+  const location = useLocation();
+
   return (
-    <aside className="bg-gray-50 border-r w-64 fixed left-0 top-16 bottom-0 pt-6">
-      <nav className="px-4">
+    <div className="fixed left-0 top-16 h-full w-64 bg-gray-800 text-white">
+      <nav className="p-4">
         <ul className="space-y-2">
           <li>
-            <a href="#" className="flex items-center px-4 py-2 text-gray-700 bg-blue-50 border-r-2 border-blue-500 rounded-l-lg">
-              <span>Users</span>
-            </a>
+            <Link
+              to="/"
+              className={`block px-4 py-2 rounded-lg hover:bg-gray-700 ${location.pathname === '/' ? 'bg-gray-700' : ''
+                }`}
+            >
+              Dashboard
+            </Link>
           </li>
           <li>
-            <a href="#" className="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
-              <span>Settings</span>
-            </a>
+            <Link
+              to="/users"
+              className={`block px-4 py-2 rounded-lg hover:bg-gray-700 ${location.pathname === '/users' ? 'bg-gray-700' : ''
+                }`}
+            >
+              Users
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/settings"
+              className={`block px-4 py-2 rounded-lg hover:bg-gray-700 ${location.pathname === '/settings' ? 'bg-gray-700' : ''
+                }`}
+            >
+              Settings
+            </Link>
           </li>
         </ul>
       </nav>
-    </aside>
+    </div>
   );
 }
 
 export default Sidebar;
+
