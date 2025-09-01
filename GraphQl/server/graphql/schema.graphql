@@ -1,0 +1,6 @@
+type Query { posts(first: Int! = 10, page: Int): PostPaginator @paginate(model: "App\\Models\\Post", type: "paginator", scopes: ["withUser"]) post(id: ID!): Post @find(model: "App\\Models\\Post") }
+type Mutation { createPost(title: String!, body: String!): Post @field(resolver: "App\\GraphQL\\Mutations\\CreatePost") addComment(post_id: ID!, body: String!): Comment @create(model: "App\\Models\\Comment") updatePost(id: ID!, title: String, body: String): Post @field(resolver: "App\\GraphQL\\Mutations\\UpdatePost") deletePost(id: ID!): Boolean @field(resolver: "App\\GraphQL\\Mutations\\DeletePost") }
+type Post { id: ID! title: String! body: String! user: User! @belongsTo comments: [Comment!]! @hasMany comments_count: Int! @method(name: "commentsCount") created_at: DateTime! }
+type Comment { id: ID! body: String! post: Post! @belongsTo created_at: DateTime! }
+type User { id: ID! name: String! posts: [Post!]! @hasMany }
+type PostPaginator { data: [Post!]! paginatorInfo: PaginatorInfo! }
