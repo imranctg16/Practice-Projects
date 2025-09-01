@@ -1,33 +1,8 @@
 import { useEffect, useState } from "react";
+import type { User } from "../types/User";
+import { userApi } from "../services/userApi";
 
 function useUsers() {
-  type User = {
-    id: string | number;
-    name: string;
-    age: number;
-    email: string;
-    greeting: string;
-    description: string;
-  };
-
-  const mockUsers = [
-    {
-      id: 1,
-      name: "John Doe",
-      age: 30,
-      email: "john@example.com",
-      greeting: "Hello!",
-      description: "A software engineer from NY."
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      age: 25,
-      email: "jane@example.com",
-      greeting: "Hi there!",
-      description: "A graphic designer from CA."
-    }
-  ];
   const [isShow, setShow] = useState(false);
 
   const toggleShow = (value: boolean) => {
@@ -45,14 +20,28 @@ function useUsers() {
   });
 
   const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(false); // For fetching users
+  const [isSubmitting, setIsSubmitting] = useState(false); // For create/update
+  const [error, setError] = useState<string | null>(null);
 
-  const addUser = (user: User) => {
-    if (isEdit) {
-      setUsers(users.map(u => (u.id === user.id ? user : u)));
-    } else {
-      setUsers([...users, user]);
+  const addUser = async (user: User) => {
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      if (isEdit) {
+        const updatedUser = await userApi.updateUser(user);
+        setUsers(users.map(u => (u.id === updatedUser.id ? updatedUser : u)));
+      } else {
+        const newUser = await userApi.createUser(user);
+        setUsers([...users, newUser]);
+      }
+      setShow(false);
+      setIsEdit(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setIsSubmitting(false);
     }
-    setShow(false);
   }
 
   const editUser = (user: User) => {
@@ -61,13 +50,34 @@ function useUsers() {
     setShow(true);
   }
 
-  const deleteUser = (user: User) => {
-    let filtered = users.filter(u => u.id !== user.id)
-    setUsers(filtered);
+  const deleteUser = async (user: User) => {
+    setIsSubmitting(true);
+    setError(null);
+    try {
+      await userApi.deleteUser(user.id);
+      setUsers(users.filter(u => u.id !== user.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete user');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
+  const fetchUsers = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const fetchedUsers = await userApi.getUsers();
+      setUsers(fetchedUsers);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load users');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setUsers(mockUsers);
+    fetchUsers();
   }, []);
 
   return {
@@ -82,7 +92,11 @@ function useUsers() {
     setUsers,
     addUser,
     editUser,
-    deleteUser
+    deleteUser,
+    isLoading,        // For user list loading
+    isSubmitting,     // For form submission loading
+    error,
+    refetch: fetchUsers
   };
 }
 
