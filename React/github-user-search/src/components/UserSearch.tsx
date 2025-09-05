@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface userSearchProps {
     onSearch: (username: string) => void;
+    search: string
 }
 
-function UserSearch({ onSearch }: userSearchProps) {
-    const [username, setUserName] = useState("");
+function UserSearch({ onSearch, search }: userSearchProps) {
+    const [username, setUserName] = useState(search);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
