@@ -8,17 +8,19 @@ interface userSearchProps {
 function UserSearch({ onSearch, search }: userSearchProps) {
     const [username, setUserName] = useState(search);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (username) {
-            console.log("Searching for user:", username);
+    useEffect(() => {
+        if (!username) return;
+        const timer = setTimeout(() => {
             onSearch(username);
-        }
-    };
+            console.log("Searching for user:", username);
+        }, 500);
+        // cleanup function to clear the timer if username changes before 500ms
+        return () => clearTimeout(timer);
+    }, [username]);
+
     return (
-        <form onSubmit={handleSubmit}>
+        <form>
             <input type="text" value={username} onChange={(e) => setUserName(e.target.value)} placeholder="Enter your github username" />
-            <button type="submit">Search</button>
         </form>
     );
 }

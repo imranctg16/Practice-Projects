@@ -9,27 +9,37 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState<string>('');
+  const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [abortSignal, setAbortSignal] = useState<AbortSignal | null>(null);
+  // init AbortController and signal on component mount
+  useEffect(() => {
+
+  }, []);
   // load last search from localStorage on component mount
   useEffect(() => {
-    console.log("useEffect running on mount");
-
-    let lastSearch = localStorage.getItem('lastSearch')
-    console.log("lastSearch from localStorage:", lastSearch);
+    let lastSearch = localStorage.getItem('lastSearch');
     if (lastSearch) {
-      console.log("Found last search in localStorage:", lastSearch);
       setSearch(lastSearch);
       handleSearch(lastSearch);
     }
   }, []);
   const handleSearch = async (username: string) => {
+    if (abortController) {
+      abortController.abort(); // abort previous request if any
+    }
+    const newAbortController = new AbortController();
+    setAbortController(newAbortController);
     setLoading(true);
     setError(null);
     try {
-      const data = await userData(username);
+      const data = await userData(username, newAbortController.signal);
       setUser(data);
       setSearch(username);
       localStorage.setItem('lastSearch', username);
     } catch (err) {
+      if (err.name === 'AbortError') {
+        return;
+      }
       setError("User not found");
       setUser(null);
     } finally {
