@@ -6,12 +6,19 @@ interface userSearchProps {
 }
 
 function UserSearch({ onSearch, search }: userSearchProps) {
-    const [username, setUserName] = useState(search);
+    const [username, setUserName] = useState("");
+
+    useEffect(() => {
+        if (!search) return;
+        setUserName(search);
+    }, [search]);
+
 
     useEffect(() => {
         if (!username) return;
         const timer = setTimeout(() => {
             onSearch(username);
+            setUserName(username);
             console.log("Searching for user:", username);
         }, 500);
         // cleanup function to clear the timer if username changes before 500ms
