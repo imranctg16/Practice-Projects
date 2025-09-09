@@ -23,7 +23,7 @@ function UserSearch({ onSearch, search }: userSearchProps) {
         }, 500);
         // cleanup function to clear the timer if username changes before 500ms
         return () => clearTimeout(timer);
-    }, [username]);
+    }, [username, onSearch]);
 
     return (
         <form>

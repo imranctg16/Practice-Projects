@@ -5,7 +5,7 @@ import UserCard from './components/UserCard';
 import useGithubUser from './hooks/useGithubUser';
 import useLocalStorage from './hooks/useLocalStorage';
 function App() {
-  const [ search, setSearch] = useState<string>('');
+  const [search, setSearch] = useState<string>('');
   const { user, loading, error, handleSearch } = useGithubUser();
   const { getItem } = useLocalStorage();
 
@@ -16,8 +16,8 @@ function App() {
       setSearch(lastSearch);
       handleSearch(lastSearch);
     }
-  }, []);
-  
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps  
+
   return (
     <div className="App">
       <h1>GitHub User Search</h1>
