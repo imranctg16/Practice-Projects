@@ -1,11 +1,11 @@
+import { useGithub } from '../contexts/GithubContext';
 import type { userType } from '../types/Users';
 
-interface UserCardProps {
-    user: userType;
-}
 
-function UserCard({ user }: UserCardProps) {
-    return (
+function UserCard() {
+    const { user } = useGithub();
+    
+    return user && (
         <div className="user-card">
             <img src={user.avatar_url} alt={`${user.login}'s avatar`}
                 width="150" />

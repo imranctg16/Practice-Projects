@@ -8,7 +8,9 @@ function useGithubUser() {
   const [error, setError] = useState<string | null>(null);
   const [abortController, setAbortController] =
     useState<AbortController | null>(null);
+
   const { setItem } = useLocalStorage();
+
   const handleSearch = useCallback(
     async (username: string) => {
       if (abortController) {

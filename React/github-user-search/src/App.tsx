@@ -1,33 +1,11 @@
-import { useEffect, useState } from 'react';
 import './App.css';
-import UserSearch from './components/UserSearch';
-import UserCard from './components/UserCard';
-import useGithubUser from './hooks/useGithubUser';
-import useLocalStorage from './hooks/useLocalStorage';
+import AppContent from './components/AppContent';
+import { GithubProvider } from './contexts/GithubContext';
 function App() {
-  const [search, setSearch] = useState<string>('');
-  const { user, loading, error, handleSearch } = useGithubUser();
-  const { getItem } = useLocalStorage();
-
-  // intialize search from localStorage
-  useEffect(() => {
-    let lastSearch = getItem('lastSearch');
-    if (lastSearch) {
-      setSearch(lastSearch);
-      handleSearch(lastSearch);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps  
-
   return (
-    <div className="App">
-      <h1>GitHub User Search</h1>
-      <UserSearch onSearch={handleSearch} search={search} />
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {user && <UserCard user={user} />}
-    </div>
+    <GithubProvider>
+      <AppContent></AppContent>
+    </GithubProvider>
   );
-
 }
-
 export default App;
