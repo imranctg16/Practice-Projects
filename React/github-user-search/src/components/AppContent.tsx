@@ -12,6 +12,7 @@ export default function AppContent() {
     useEffect(() => {
         let lastSearch = getItem('lastSearch');
         if (lastSearch) {
+            console.log("🔴 APP: Calling handleSearch from localStorage:", lastSearch);
             setSearch(lastSearch);
             handleSearch(lastSearch);
         }

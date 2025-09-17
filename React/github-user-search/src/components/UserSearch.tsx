@@ -16,14 +16,16 @@ function UserSearch({ onSearch, search }: userSearchProps) {
 
     useEffect(() => {
         if (!username) return;
+        if (username === search) return;
         const timer = setTimeout(() => {
+            console.log("🟡 USERSEARCH: Timer expired, calling onSearch:", username);
             onSearch(username);
-            setUserName(username);
+            // setUserName(username);
             console.log("Searching for user:", username);
         }, 500);
         // cleanup function to clear the timer if username changes before 500ms
         return () => clearTimeout(timer);
-    }, [username, onSearch]);
+    }, [username]);
 
     return (
         <form>
