@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useReducer, useState } from "react";
 import { userType } from "../types/Users";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { userData } from "../services/githubApi";
@@ -8,6 +8,63 @@ type GithubContextType = {
   loading: boolean,
   error: string | null,
   handleSearch: (username: string) => void
+}
+
+type AppAction =
+  | { type: 'SEARCH_START'; payload: string }
+  | { type: 'SEARCH_SUCCESS'; payload: userType }
+  | { type: 'SEARCH_ERROR'; payload: string }
+  | { type: 'SEARCH_ABORT' };
+
+interface AppState {
+  user: userType | null;
+  loading: boolean;
+  error: string | null;
+  currentSearch: string | null;
+}
+
+const initialState: AppState = {
+  user: null,
+  loading: false,
+  error: null,
+  currentSearch: null,
+};
+
+function githubReducer(state: AppState, action: AppAction): AppState {
+  switch (action.type) {
+    case 'SEARCH_START':
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        currentSearch: action.payload,
+      };
+
+    case 'SEARCH_SUCCESS':
+      return {
+        ...state,
+        loading: false,
+        user: action.payload,
+        error: null,
+        currentSearch: null,
+      };
+    case 'SEARCH_ERROR':
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+        user: null,
+        currentSearch: null,
+      };
+    case 'SEARCH_ABORT':
+      return {
+        ...state,
+        loading: false,
+        currentSearch: null,
+      };
+    default:
+      return state;
+  }
 }
 
 const defaultUser = {
@@ -20,36 +77,40 @@ const defaultUser = {
 const GithubContext = createContext<GithubContextType>(defaultUser);
 
 export function GithubProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<userType | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
+
   const { setItem } = useLocalStorage();
+  // reducer setup 
+  const [reducerState, dispatch] = useReducer(githubReducer, initialState);
+
   const handleSearch = useCallback(async (username: string) => {
     if (abortController) {
       abortController.abort();
     }
-    setLoading(true);
-    setError(null);
+    // Dispatch: "Search started"
+    dispatch({ type: 'SEARCH_START', payload: username });
     const controller = new AbortController();
     setAbortController(controller);
     try {
-      console.log("🔵 CONTEXT: handleSearch called with:", username);
       const data = await userData(username, controller.signal);
-      setUser(data);
+      dispatch({ type: 'SEARCH_SUCCESS', payload: data });
     } catch (err: any) {
       if (err.name === "AbortError") {
+        dispatch({ type: 'SEARCH_ABORT' });
         return;
       }
-      setError("User not found");
-      setUser(null);
+      dispatch({ type: 'SEARCH_ERROR', payload: "User not found" });
     } finally {
-      setLoading(false);
       setItem("lastSearch", username);
     }
-  }, [abortController, setItem])
+  }, [abortController, setItem, dispatch])
   return (
-    <GithubContext.Provider value={{ user, loading, error, handleSearch }} >{children}</GithubContext.Provider>
+    <GithubContext.Provider value={{
+      user: reducerState.user,
+      loading: reducerState.loading,
+      error: reducerState.error,
+      handleSearch
+    }} >{children}</GithubContext.Provider>
   );
 };
 
