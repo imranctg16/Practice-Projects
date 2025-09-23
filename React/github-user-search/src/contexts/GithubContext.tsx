@@ -103,7 +103,7 @@ export function GithubProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setItem("lastSearch", username);
     }
-  }, [abortController, setItem, dispatch])
+  }, [setItem, dispatch])
   return (
     <GithubContext.Provider value={{
       user: reducerState.user,
